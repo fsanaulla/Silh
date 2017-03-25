@@ -1,0 +1,17 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+POST     /cl                           controllers.ClientController.addClient
+PUT      /cl/:id                       controllers.ClientController.updateClient(id: Long)
+GET      /cl/:id                       controllers.ClientController.getClient(id: Long)
+DELETE   /cl/:id                       controllers.ClientController.deleteClient(id: Long)
+GET      /cl-all                       controllers.ClientController.getAllClient
+
+POST     /lg                           controllers.LogsController.addLogNote
+PUT      /lg/:id                       controllers.LogsController.updateLogNote(id: Long)
+GET      /lg/:id                       controllers.LogsController.getLogNote(id: Long)
+DELETE   /lg/:id                       controllers.LogsController.deleteLogNote(id: Long)
+GET      /lg-all                       controllers.LogsController.getAllLogsNote
+
+
