@@ -9,22 +9,22 @@ import play.api.data.Forms._
   */
 object ValidationForms {
 
-  case class AddClient(first_name: String, last_name: String)
-  case class UpdateClient(first_name: Option[String], last_name: Option[String])
-  case class AddLog(userId: Long, content: String)
+  case class AddClientForm(first_name: String, last_name: String)
+  case class UpdateClientForm(first_name: Option[String], last_name: Option[String])
+  case class AddLogForm(userId: Long, content: String)
 
   val addClientForm = Form(
     mapping(
       "first_name" -> nonEmptyText,
       "last_name" -> nonEmptyText
-    )(AddClient.apply)(AddClient.unapply)
+    )(AddClientForm.apply)(AddClientForm.unapply)
   )
 
   val addLogForm = Form(
     mapping(
       "userId" -> longNumber,
       "content" -> nonEmptyText
-    )(AddLog.apply)(AddLog.unapply)
+    )(AddLogForm.apply)(AddLogForm.unapply)
   )
 
   val singleLogsUpdate = Form(
@@ -37,6 +37,6 @@ object ValidationForms {
     mapping(
       "first_name" -> optional(text),
       "last_name" -> optional(text)
-    )(UpdateClient.apply)(UpdateClient.unapply)
+    )(UpdateClientForm.apply)(UpdateClientForm.unapply)
   )
 }

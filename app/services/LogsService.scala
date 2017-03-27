@@ -1,7 +1,7 @@
 package services
 
 import com.google.inject.Inject
-import models.Models.{LogNote, logs}
+import models.DatabaseModel.{LogNote, logs}
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.driver.JdbcProfile
 import slick.driver.PostgresDriver.api._

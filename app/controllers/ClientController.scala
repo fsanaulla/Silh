@@ -2,7 +2,6 @@ package controllers
 
 import com.google.inject.Inject
 import forms.ValidationForms._
-import models.Models.Client
 import play.api.libs.json.Json
 import play.api.mvc.{Action, Controller}
 import services.ClientService
@@ -18,7 +17,7 @@ class ClientController @Inject()(clientService: ClientService) extends Controlle
 
   def addClient = Action.async { implicit req =>
     val client = addClientForm.bindFromRequest.get
-    clientService.insertClient(Client(client.first_name, client.last_name))
+    clientService.insertClient(client.first_name, client.last_name)
       .map { c =>
         log.info(s"Successfully created client $client")
         Ok(Json.toJson(c))

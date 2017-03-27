@@ -1,7 +1,7 @@
 package services
 
 import com.google.inject.Inject
-import models.Models.{Client, clients}
+import models.DatabaseModel.{Client, clients}
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.driver.JdbcProfile
 import slick.driver.PostgresDriver.api._
@@ -16,7 +16,8 @@ import scala.concurrent.Future
   */
 class ClientService @Inject()(override protected val dbConfigProvider: DatabaseConfigProvider, err: ErrorHandler) extends HasDatabaseConfigProvider[JdbcProfile]{
 
-  def insertClient(client: Client): Future[Client] = {
+  def insertClient(firstName: String, lastName: String): Future[Client] = {
+    val client = Client(firstName, lastName)
     db.run(clients += client).map(_ => client)
   }
 

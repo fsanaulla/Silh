@@ -1,6 +1,6 @@
 package utils
 
-import models.Models.{Client, LogNote}
+import models.DatabaseModel.{Client, LogNote}
 import play.api.libs.json.Json
 
 /**
@@ -9,4 +9,5 @@ import play.api.libs.json.Json
 object Implicits {
   implicit val fmtCl = Json.format[Client]
   implicit val fmtLog = Json.format[LogNote]
+
 }

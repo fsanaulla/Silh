@@ -5,7 +5,7 @@ import slick.lifted.TableQuery
 /**
   * Created by faiaz on 12.03.17.
   */
-object Models {
+object DatabaseModel {
 
   val clients: TableQuery[ClientTable] = TableQuery[ClientTable]
   val logs: TableQuery[LogNoteTable] = TableQuery[LogNoteTable]
