@@ -3,7 +3,7 @@ package controllers
 import com.google.inject.Inject
 import forms.ValidationForms.{addLogForm, singleLogsUpdate}
 import play.api.libs.json.Json
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.Action
 import services.LogsService
 import utils.Implicits._
 
@@ -13,7 +13,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 /**
   * Created by faiaz on 13.03.17.
   */
-class LogsController @Inject()(logService: LogsService) extends Controller {
+class LogsController @Inject()(logService: LogsService) extends BaseController {
 
   def addLogNote = Action.async { implicit req =>
     val log = addLogForm.bindFromRequest.get

@@ -3,17 +3,16 @@ package controllers
 import com.google.inject.Inject
 import forms.ValidationForms._
 import play.api.libs.json.Json
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.Action
 import services.ClientService
 import utils.Implicits._
-import utils.Logging
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
   * Created by faiaz on 12.03.17.
   */
-class ClientController @Inject()(clientService: ClientService) extends Controller with Logging {
+class ClientController @Inject()(clientService: ClientService) extends BaseController {
 
   def addClient = Action.async { implicit req =>
     val client = addClientForm.bindFromRequest.get
