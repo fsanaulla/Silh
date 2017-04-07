@@ -7,8 +7,8 @@ import com.mohiva.play.silhouette.password.BCryptPasswordHasher
 import com.mohiva.play.silhouette.persistence.daos.DelegableAuthInfoDAO
 import services.UserService
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-
 /**
   * Created by faiaz on 07.04.17.
   */

@@ -6,9 +6,11 @@ import com.google.inject.Inject
 import models.UserToken
 import play.api.libs.json.Json
 import play.modules.reactivemongo.ReactiveMongoApi
+import play.modules.reactivemongo.json._
 import reactivemongo.play.json.collection.JSONCollection
 import utils.Logging
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 /**

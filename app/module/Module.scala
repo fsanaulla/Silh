@@ -6,7 +6,7 @@ import com.mohiva.play.silhouette.api.crypto.{CookieSigner, Crypter, CrypterAuth
 import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
 import com.mohiva.play.silhouette.api.services.{AuthenticatorService, IdentityService}
 import com.mohiva.play.silhouette.api.util._
-import com.mohiva.play.silhouette.api.{Environment, EventBus}
+import com.mohiva.play.silhouette.api.{Environment, EventBus, Silhouette, SilhouetteProvider}
 import com.mohiva.play.silhouette.crypto.{JcaCookieSigner, JcaCookieSignerSettings, JcaCrypter, JcaCrypterSettings}
 import com.mohiva.play.silhouette.impl.authenticators.{CookieAuthenticator, CookieAuthenticatorService, CookieAuthenticatorSettings}
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
@@ -27,9 +27,10 @@ import utils.MyEnv
   * Created by faiaz on 06.04.17.
   */
 class Module extends AbstractModule with ScalaModule {
-  //todo: configure module
+
   override def configure(): Unit = {
     bind[IdentityService[User]].to[UserService]
+    bind[Silhouette[MyEnv]].to[SilhouetteProvider[MyEnv]]
     bind[DelegableAuthInfoDAO[PasswordInfo]].to[PasswordInfoDao]
     bind[IDGenerator].toInstance(new SecureRandomIDGenerator())
     bind[PasswordHasher].toInstance(new BCryptPasswordHasher)
