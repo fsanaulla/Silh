@@ -14,8 +14,8 @@ GET      /lg/:id                       controllers.LogsController.getLogNote(id:
 DELETE   /lg/:id                       controllers.LogsController.deleteLogNote(id: Long)
 GET      /lg-all                       controllers.LogsController.getAllLogsNote
 
-GET      /auth/signup                  controllers.AuthController.startSignUp
-POST     /auth/signup                  controllers.AuthController.handleSignUp
-GET      /auth/signup/:token           controllers.AuthController.completeSignUp(token:String)
+GET      /auth/signup                  controllers.SignUpController.startSignUp
+POST     /auth/signup                  controllers.SignUpController.handleSignUp
+GET      /auth/signup/:token           controllers.SignUpController.completeSignUp(token:String)
 
 

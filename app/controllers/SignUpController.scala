@@ -5,7 +5,7 @@ import play.api.mvc.Action
 /**
   * Created by faiaz on 06.04.17.
   */
-class AuthController extends BaseController {
+class SignUpController extends BaseController {
 
   def startSignUp = Action {
     Ok("startSignUp")

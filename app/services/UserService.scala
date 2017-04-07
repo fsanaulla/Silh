@@ -1,11 +1,8 @@
 package services
-import java.util.UUID
-
 import com.google.inject.Inject
 import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.api.services.IdentityService
-import com.mohiva.play.silhouette.impl.providers.CommonSocialProfile
-import models.{Profile, User}
+import models.User
 import play.api.libs.json.Json
 import play.modules.reactivemongo.ReactiveMongoApi
 import reactivemongo.play.json.collection.JSONCollection
@@ -20,19 +17,6 @@ class UserService @Inject()(reactiveMongoApi: ReactiveMongoApi) extends Identity
 
   private def db = reactiveMongoApi.database.map(_.collection[JSONCollection](User.COLLECTION_NAME))
 
-  def save(socialProfile: CommonSocialProfile): Future[User] = {
-    log.debug(s"Save user by SocialProvider $socialProfile")
-
-    val profile = Profile.toProfile(socialProfile)
-    val selector = Json.obj("profiles.loginInfo" -> profile.loginInfo)
-
-    db.flatMap(_.find(selector).one[User])
-    .flatMap {
-      case None => save(User(UUID.randomUUID(), List(profile)))
-      case _ => update(profile)
-    }
-  }
-
   def save(user: User): Future[User] = {
     db.flatMap(_.insert(user))
     .map(_ => {
@@ -41,7 +25,7 @@ class UserService @Inject()(reactiveMongoApi: ReactiveMongoApi) extends Identity
     })
   }
 
-  def find(userId: UUID): Future[Option[User]] = {
+  def find(userId: String): Future[Option[User]] = {
     log.debug(s"Searching user by UUID: $userId")
 
     db.flatMap(_.find(Json.obj("id" -> userId)).one[User])
@@ -62,29 +46,14 @@ class UserService @Inject()(reactiveMongoApi: ReactiveMongoApi) extends Identity
     }
   }
 
-  def link(user: User, profile: Profile): Future[User] = {
-    log.debug(s"Linking Profile: $profile  ---> to User: $User")
+  def update(user: User): Future[User] = {
+    log.debug(s"Updating User $user")
 
     val selector = Json.obj("id" -> user.id)
-    val pushProfile = Json.obj("$push" -> Json.obj("profiles" -> Json.toJson(profile)))
-
-    for {
-      _ <- db.flatMap(_.update(selector, pushProfile))
-      user <- find(user.id)
-    } yield {
-      log.debug("User profile linked")
-      user.get
-    }
-  }
-
-  def update(profile: Profile): Future[User] = {
-    log.debug(s"Updating profile $profile")
-
-    val selector = Json.obj("profiles.loginInfo" -> profile.loginInfo)
-    val update = Json.obj("$set" -> Json.obj("profiles.$" -> Json.toJson(profile)))
+    val update = Json.obj("$set" -> user)
     for {
       _ <- db.flatMap(_.update(selector, update))
-      user <- retrieve(profile.loginInfo)
+      user <- find(user.uuidStr)
     } yield {
       log.debug("User profile updated")
       user.get
@@ -94,6 +63,26 @@ class UserService @Inject()(reactiveMongoApi: ReactiveMongoApi) extends Identity
   override def retrieve(loginInfo: LoginInfo): Future[Option[User]] = {
     log.debug(s"Retrieve User by LoginInfo: $loginInfo")
 
-    db.flatMap(_.find(Json.obj("profiles.loginInfo" -> loginInfo)).one[User])
+    db.flatMap(_.find(Json.obj("id" -> loginInfo.providerID)).one[User])
+  }
+
+  def updatePassHash(login: String, pass: String): Future[Option[User]] = {
+    log.debug(s"Updating Passhash for User with id: $login to passHash: $pass")
+
+    val selector = Json.obj("id" -> login)
+    val update = Json.obj("pashHash" -> pass)
+
+    for {
+      _ <- db.flatMap(_.update(selector, update)).map(_ => {})
+      user <- find(login)
+    } yield user
+  }
+
+  def remove(id: String): Future[Unit] = {
+    log.debug(s"Remove User with id: $id")
+
+    val selector = Json.obj("id" -> id)
+
+    db.flatMap(_.remove(selector)).map(_ => {})
   }
 }
