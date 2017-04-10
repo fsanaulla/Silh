@@ -14,6 +14,7 @@ import play.api.libs.json.Json
 case class User(
                 id: UUID = UUID.randomUUID(),
                 loginInfo: LoginInfo,
+                confirmed: Boolean,
                 email: Option[String],
                 phone: Option[String],
                 firstName: Option[String] = None,

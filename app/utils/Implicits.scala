@@ -9,5 +9,4 @@ import play.api.libs.json.Json
 object Implicits {
   implicit val fmtCl = Json.format[Client]
   implicit val fmtLog = Json.format[LogNote]
-
 }
