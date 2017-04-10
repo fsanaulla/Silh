@@ -1,13 +1,13 @@
 package services
 
 import com.google.inject.Inject
-import models.DatabaseModel.{LogNote, logs}
+import models.PostgresqlModel.{LogNote, logs}
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.driver.JdbcProfile
 import slick.driver.PostgresDriver.api._
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 
 /**

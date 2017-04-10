@@ -1,7 +1,7 @@
 package services
 
 import com.google.inject.Inject
-import models.DatabaseModel.{Client, clients}
+import models.PostgresqlModel.{Client, clients}
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.driver.JdbcProfile
 import slick.driver.PostgresDriver.api._

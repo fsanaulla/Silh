@@ -2,7 +2,9 @@ package models
 
 import java.util.{Date, UUID}
 
+import com.mohiva.play.silhouette.api.util.PasswordInfo
 import com.mohiva.play.silhouette.api.{Identity, LoginInfo}
+import com.mohiva.play.silhouette.impl.providers.OAuth1Info
 import org.joda.time.DateTime
 import play.api.libs.json.Json
 
@@ -11,14 +13,16 @@ import play.api.libs.json.Json
   */
 case class User(
                 id: UUID = UUID.randomUUID(),
+                loginInfo: LoginInfo,
                 email: Option[String],
                 phone: Option[String],
-                passHash: String,
                 firstName: Option[String] = None,
                 lastName: Option[String] = None,
+                passwordInfo: Option[PasswordInfo],
+                oauth1Info: Option[OAuth1Info],
                 created: Date = new Date()) extends Identity {
 
-  def fullName(loginInfo:LoginInfo): Option[String] = for {
+  def fullName(loginInfo: LoginInfo): Option[String] = for {
     f <- firstName
     l <- lastName
   } yield f + " " + l
@@ -28,6 +32,8 @@ case class User(
 
 object User {
   implicit val userJsonFormat = Json.format[User]
+  implicit val passwordInfoJsonFormat = Json.format[PasswordInfo]
+  implicit val oauth1InfoJsonFormat = Json.format[OAuth1Info]
 
   val COLLECTION_NAME = "users"
 }

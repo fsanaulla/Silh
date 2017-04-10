@@ -1,6 +1,6 @@
 package utils
 
-import models.DatabaseModel.{Client, LogNote}
+import models.PostgresqlModel.{Client, LogNote}
 import play.api.libs.json.Json
 
 /**

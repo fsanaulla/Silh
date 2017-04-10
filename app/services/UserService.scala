@@ -2,7 +2,10 @@ package services
 import com.google.inject.Inject
 import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.api.services.IdentityService
+import com.mohiva.play.silhouette.api.util.PasswordInfo
+import com.mohiva.play.silhouette.impl.providers.OAuth1Info
 import models.User
+import models.User._
 import play.api.libs.json.Json
 import play.modules.reactivemongo.ReactiveMongoApi
 import play.modules.reactivemongo.json._
@@ -31,6 +34,12 @@ class UserService @Inject()(reactiveMongoApi: ReactiveMongoApi) extends Identity
     log.debug(s"Searching user by UUID: $userId")
 
     db.flatMap(_.find(Json.obj("id" -> userId)).one[User])
+  }
+
+  def find(loginInfo: LoginInfo): Future[Option[User]] = {
+    log.debug(s"Searching user by login info: $loginInfo")
+
+    db.flatMap(_.find(Json.obj("loginInfo" -> loginInfo)).one[User])
   }
 
   def confirm(loginInfo: LoginInfo): Future[User] = {
@@ -68,22 +77,34 @@ class UserService @Inject()(reactiveMongoApi: ReactiveMongoApi) extends Identity
     db.flatMap(_.find(Json.obj("id" -> loginInfo.providerID)).one[User])
   }
 
-  def updatePassHash(login: String, pass: String): Future[Option[User]] = {
-    log.debug(s"Updating Passhash for User with id: $login to passHash: $pass")
+  def updatePassHash(loginInfo: LoginInfo, passInfo: PasswordInfo): Future[Option[User]] = {
+    log.debug(s"Updating passInfo for User with id: $loginInfo to passHash: $passInfo")
 
-    val selector = Json.obj("id" -> login)
-    val update = Json.obj("pashHash" -> pass)
+    val selector = Json.obj("loginInfo" -> loginInfo)
+    val update = Json.obj("$set" -> Json.obj("passwordInfo" -> passInfo))
 
     for {
       _ <- db.flatMap(_.update(selector, update)).map(_ => {})
-      user <- find(login)
+      user <- find(loginInfo)
     } yield user
   }
 
-  def remove(id: String): Future[Unit] = {
-    log.debug(s"Remove User with id: $id")
+  def updateOAuthInfo(loginInfo: LoginInfo, oAuth1Info: OAuth1Info): Future[Option[User]] = {
+    log.debug(s"Updating passInfo for User with id: $loginInfo to passHash: $oAuth1Info")
 
-    val selector = Json.obj("id" -> id)
+    val selector = Json.obj("loginInfo" -> loginInfo)
+    val update = Json.obj("$set" -> Json.obj("passwordInfo" -> oAuth1Info))
+
+    for {
+      _ <- db.flatMap(_.update(selector, update)).map(_ => {})
+      user <- find(loginInfo)
+    } yield user
+  }
+
+  def remove(loginInfo: LoginInfo): Future[Unit] = {
+    log.debug(s"Remove User with id: $loginInfo")
+
+    val selector = Json.obj("id" -> loginInfo)
 
     db.flatMap(_.remove(selector)).map(_ => {})
   }

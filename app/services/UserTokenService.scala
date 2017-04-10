@@ -24,21 +24,21 @@ class UserTokenService @Inject()(reactiveMongoApi: ReactiveMongoApi) extends Log
     log.debug(s"Searching UserToken by UUID $id")
 
     val selector = Json.obj("id" -> id)
+
     db.flatMap(_.find(selector).one[UserToken])
   }
-
 
   def save(token: UserToken): Future[UserToken] = {
     log.debug(s"Saving token: $token")
 
-    db.flatMap(_.insert(token))
-    .map(_ => token)
+    db.flatMap(_.insert(token)).map(_ => token)
   }
+
   def remove(id: UUID): Future[Unit] = {
     log.debug(s"Removing token with UUID: $id")
 
     val selector = Json.obj("id" -> id)
-    db.flatMap(_.remove(selector))
-    .map(_ => {})
+
+    db.flatMap(_.remove(selector)).map(_ => {})
   }
 }
