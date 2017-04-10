@@ -31,9 +31,9 @@ case class User(
 }
 
 object User {
-  implicit val userJsonFormat = Json.format[User]
   implicit val passwordInfoJsonFormat = Json.format[PasswordInfo]
   implicit val oauth1InfoJsonFormat = Json.format[OAuth1Info]
+  implicit val userJsonFormat = Json.format[User]
 
   val COLLECTION_NAME = "users"
 }
