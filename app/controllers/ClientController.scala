@@ -1,31 +1,39 @@
 package controllers
 
 import com.google.inject.Inject
+import com.mohiva.play.silhouette.api.Silhouette
 import forms.ValidationForms._
-import models.Models.Client
+import play.api.i18n.MessagesApi
 import play.api.libs.json.Json
-import play.api.mvc.{Action, Controller}
 import services.ClientService
 import utils.Implicits._
-import utils.Logging
+import utils.MyEnv
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
   * Created by faiaz on 12.03.17.
   */
-class ClientController @Inject()(clientService: ClientService) extends Controller with Logging {
+class ClientController @Inject()(
+                                  clientService: ClientService,
+                                  val silhouette: Silhouette[MyEnv],
+                                  val messagesApi: MessagesApi
+                                ) extends AuthController {
 
-  def addClient = Action.async { implicit req =>
+  def addClient = SecuredAction.async { implicit req =>
+    log.info("Save new client")
+
     val client = addClientForm.bindFromRequest.get
-    clientService.insertClient(Client(client.first_name, client.last_name))
+    clientService.insertClient(client.first_name, client.last_name)
       .map { c =>
         log.info(s"Successfully created client $client")
         Ok(Json.toJson(c))
       }
   }
 
-  def getClient(userId: Long) = Action.async { implicit req =>
+  def getClient(userId: Long) = SecuredAction.async { implicit req =>
+    log.info(s"Get client by id: $userId")
+
     clientService.getClient(userId).map {
       case Some(u) =>
         log.info(s"Successfully retrieved client $u for id:$userId")
@@ -36,7 +44,9 @@ class ClientController @Inject()(clientService: ClientService) extends Controlle
     }
   }
 
-  def updateClient(userId: Long) = Action.async { implicit req =>
+  def updateClient(userId: Long) = SecuredAction.async { implicit req =>
+    log.info(s"Update client with id: $userId")
+
     val update = updateClientForm.bindFromRequest.get
     clientService.updateClient(userId, update.first_name, update.last_name)
       .map { res =>
@@ -45,7 +55,9 @@ class ClientController @Inject()(clientService: ClientService) extends Controlle
       }
   }
 
-  def deleteClient(userId: Long) = Action.async { implicit req =>
+  def deleteClient(userId: Long) = SecuredAction.async { implicit req =>
+    log.info(s"Delete client by id: $userId")
+
     clientService.deleteClient(userId)
       .map { _ =>
         log.info(s"Successfully deleting for id:$userId")
@@ -53,7 +65,8 @@ class ClientController @Inject()(clientService: ClientService) extends Controlle
       }
   }
 
-  def getAllClient = Action.async { implicit req =>
+  def getAllClient = SecuredAction.async { implicit req =>
+    log.info("Get all clients")
     clientService.allClients
       .map { seq =>
         log.info("Returning all clients")

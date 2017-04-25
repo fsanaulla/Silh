@@ -1,6 +1,5 @@
 import org.scalatestplus.play._
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.api.test._
 import play.api.{Application, Mode}
@@ -10,7 +9,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 /**
   * Created by faiaz on 12.03.17.
   */
-class ApplicationSpec extends PlaySpec {
+class ClientsControllerSpec extends PlaySpec {
 
   implicit lazy val app: Application = new GuiceApplicationBuilder()
     .in(Mode.Test)
